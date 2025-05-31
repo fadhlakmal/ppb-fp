@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/app/configs/firebase_options.dart';
 import 'package:myapp/app/screens/home_screen.dart';
+import 'package:myapp/app/screens/login_screen.dart';
+import 'package:myapp/app/screens/register_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,8 +19,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      initialRoute: 'home',
-      routes: {'home': (context) => const HomeScreen()},
+      initialRoute: 'login',
+      routes: {
+        'home': (context) => const HomeScreen(),
+        'login': (context) => const LoginScreen(),
+        'register': (context) => const RegisterScreen(),
+      },
     );
   }
 }
