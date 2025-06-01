@@ -5,15 +5,16 @@ class UserService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final String _collection = 'users';
 
-  Future<String?> createUser(UserModel user) async {
+  Future<bool> createUser(UserModel user) async {
     try {
-      DocumentReference docRef = await _db
-          .collection(_collection)
-          .add(user.toMap());
-      return docRef.id;
+      if (user.uid == null) {
+        return false;
+      }
+      await _db.collection(_collection).doc(user.uid).set(user.toMap());
+      return true;
     } catch (e) {
       print("Error writing document: $e");
-      return null;
+      return false;
     }
   }
 

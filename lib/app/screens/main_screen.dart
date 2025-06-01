@@ -24,10 +24,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Tes"),
-      ),
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavbarWidget(
         onTap: onTabSelected,

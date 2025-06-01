@@ -56,7 +56,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           uid: creds.user?.uid,
           username: _usernameController.text,
           email: _emailController.text,
-          imgUrl: "",
+          imgUrl:
+              "https://res.cloudinary.com/dufpjkte2/image/upload/v1748746680/user_qqxjln.png",
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
         ),
