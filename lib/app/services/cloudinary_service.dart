@@ -36,7 +36,7 @@ class CloudinaryService {
         ),
       );
 
-      if (response!.responseCode > 200) {
+      if (response!.responseCode == 200) {
         return CloudinaryUploadResponse(
           publicId: response.data?.publicId ?? '',
           secureUrl: response.data?.secureUrl ?? '',

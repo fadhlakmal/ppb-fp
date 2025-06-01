@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/app/models/cloudinary_response_model.dart';
 import 'package:myapp/app/models/user_model.dart';
 import 'package:myapp/app/services/user_service.dart';
+import 'package:myapp/app/services/cloudinary_service.dart';
+import 'package:myapp/app/services/image_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,9 +17,12 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final UserService _userService = UserService();
+  final ImageService _imageService = ImageService();
+  final CloudinaryService _cloudinaryService = CloudinaryService();
 
   UserModel? _currentUser;
   bool _isLoading = true;
+  bool _isUpdating = false;
   String? _error;
 
   final _usernameController = TextEditingController();
@@ -67,6 +75,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } finally {
       setState(() {
         _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _updateProfileImage() async {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null || _currentUser == null) {
+      setState(() {
+        _error = "Not logged in";
+      });
+      return;
+    }
+
+    try {
+      final File? imageFile = await _imageService.pickGalleryImage();
+      if (imageFile == null) return;
+
+      setState(() {
+        _isUpdating = true;
+        _error = null;
+      });
+
+      final CloudinaryUploadResponse? response = await _cloudinaryService
+          .uploadProfileImage(imageFile, currentUser.uid);
+
+      if (response != null) {
+        final success = await _userService.updateUser(currentUser.uid, {
+          'imgUrl': response.secureUrl,
+        });
+
+        if (success) {
+          setState(() {
+            _currentUser = _currentUser!.copyWith(imgUrl: response.secureUrl);
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Profile image updated'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          setState(() {
+            _error = "Failed to update profile image";
+          });
+        }
+      } else {
+        setState(() {
+          _error = "Failed to upload image";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _error = "Error: ${e.toString()}";
+      });
+    } finally {
+      setState(() {
+        _isUpdating = false;
       });
     }
   }
@@ -157,20 +222,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 70,
-              backgroundColor: Colors.grey.shade200,
-              backgroundImage:
-                  _currentUser?.imgUrl != null &&
-                          _currentUser!.imgUrl!.isNotEmpty
-                      ? NetworkImage(_currentUser!.imgUrl!)
-                      : null,
-              child:
-                  _currentUser?.imgUrl == null || _currentUser!.imgUrl!.isEmpty
-                      ? Icon(Icons.person, size: 70, color: Colors.grey)
-                      : null,
+            Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                CircleAvatar(
+                  radius: 70,
+                  backgroundColor: Colors.grey.shade200,
+                  backgroundImage:
+                      _currentUser?.imgUrl != null &&
+                              _currentUser!.imgUrl!.isNotEmpty
+                          ? NetworkImage(_currentUser!.imgUrl!)
+                          : null,
+                  child:
+                      _currentUser?.imgUrl == null ||
+                              _currentUser!.imgUrl!.isEmpty
+                          ? Icon(Icons.person, size: 70, color: Colors.grey)
+                          : null,
+                ),
+                CircleAvatar(
+                  radius: 22,
+                  backgroundColor: Theme.of(context).primaryColor,
+                  child: IconButton(
+                    icon: Icon(Icons.camera_alt, color: Colors.white, size: 20),
+                    onPressed: _isUpdating ? null : _updateProfileImage,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 24.0,),
+            SizedBox(height: 24.0),
             Text(
               _currentUser!.username,
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
