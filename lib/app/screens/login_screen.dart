@@ -23,9 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushReplacementNamed(context, 'register');
   }
 
-  void navigateHome() {
+  void navigateMain() {
     if (!context.mounted) return;
-    Navigator.pushReplacementNamed(context, 'home');
+    Navigator.pushReplacementNamed(context, 'main');
   }
 
   void signIn() async {
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      navigateHome();
+      navigateMain();
     } on FirebaseAuthException catch (e) {
       _errorCode = e.code;
       setState(() {

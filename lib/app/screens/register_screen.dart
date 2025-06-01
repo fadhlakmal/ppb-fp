@@ -30,9 +30,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     Navigator.pushReplacementNamed(context, 'login');
   }
 
-  void navigateHome() {
+  void navigateMain() {
     if (!context.mounted) return;
-    Navigator.pushReplacementNamed(context, 'home');
+    Navigator.pushReplacementNamed(context, 'main');
   }
 
   void signUp() async {
@@ -62,7 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       );
 
-      navigateHome();
+      navigateMain();
     } on FirebaseAuthException catch (e) {
       setState(() {
         _errorCode = e.code;
@@ -229,7 +229,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             if (_errorCode.isNotEmpty) const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: signUp,
+              onPressed: _isLoading ? null : signUp,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColor,
                 foregroundColor: Colors.white,
