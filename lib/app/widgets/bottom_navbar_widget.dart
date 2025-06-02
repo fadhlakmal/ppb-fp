@@ -21,6 +21,7 @@ class BottomNavbarWidget extends StatelessWidget {
       items: [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+        BottomNavigationBarItem(icon: Icon(Icons.add_circle_outline), label: "Tambah Bahan"),
       ],
     );
   }
