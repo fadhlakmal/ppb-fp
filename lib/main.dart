@@ -6,10 +6,12 @@ import 'package:myapp/app/screens/login_screen.dart';
 import 'package:myapp/app/screens/recipe_reference_screen.dart';
 import 'package:myapp/app/screens/register_screen.dart';
 import 'package:myapp/app/screens/add_ingredient_screen.dart';
+import 'package:myapp/app/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await NotificationService.initializeNotification();
   runApp(const MyApp());
 }
 

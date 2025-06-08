@@ -41,6 +41,8 @@ dependencies:
   cloudinary_api: ^1.0.0
   image_picker: ^1.1.2
   http: ^1.4.0
+  awesome_notifications: ^0.10.1
+  
 
 dev_dependencies:
   flutter_test:
