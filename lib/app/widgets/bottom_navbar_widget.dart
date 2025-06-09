@@ -20,7 +20,11 @@ class BottomNavbarWidget extends StatelessWidget {
       unselectedItemColor: Colors.grey,
       items: [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.set_meal_outlined), label: "Bahan"),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.set_meal_outlined),
+          label: "Bahan",
+        ),
+        BottomNavigationBarItem(icon: Icon(Icons.schedule), label: "Schedule"),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
       ],
     );

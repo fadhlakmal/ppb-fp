@@ -86,20 +86,24 @@ class NotificationService {
     required int id,
     required String recipeTitle,
     required DateTime scheduledDate,
-    String? body,
+    required String body,
   }) async {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: id,
-        channelKey: 'recipe_channel',
-        title: 'Time to cook: $recipeTitle',
-        body: body ?? 'Your scheduled recipe is ready to be cooked!',
-        notificationLayout: NotificationLayout.Default,
-        category: NotificationCategory.Reminder,
-        wakeUpScreen: true,
-        fullScreenIntent: true,
-      ),
-      schedule: NotificationCalendar.fromDate(date: scheduledDate),
+    final now = DateTime.now();
+    if (scheduledDate.isBefore(now)) {
+      return;
+    }
+
+    await createNotification(
+      id: id,
+      title: '👨‍🍳 Recipe Reminder',
+      body: body,
+      summary: 'Time to cook: $recipeTitle',
+      scheduled: true,
+      interval: scheduledDate.difference(now),
+      actionButtons: [
+        NotificationActionButton(key: 'START_COOKING', label: 'Start Cooking'),
+        NotificationActionButton(key: 'SNOOZE', label: 'Snooze 10min'),
+      ],
     );
   }
 

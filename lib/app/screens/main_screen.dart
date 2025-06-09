@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/app/screens/home_screen.dart';
 import 'package:myapp/app/screens/profile_screen.dart';
 import 'package:myapp/app/screens/add_ingredient_screen.dart';
+import 'package:myapp/app/screens/recipe_schedule_screen.dart';
 import 'package:myapp/app/widgets/bottom_navbar_widget.dart';
 
 class MainScreen extends StatefulWidget {
@@ -14,7 +15,12 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [HomeScreen(), AddIngredientScreen(), ProfileScreen()];
+  final List<Widget> _screens = [
+    HomeScreen(),
+    AddIngredientScreen(),
+    ScheduleScreen(),
+    ProfileScreen(),
+  ];
 
   void onTabSelected(int index) {
     setState(() {
