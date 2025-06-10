@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:myapp/app/models/api_response_model.dart';
 import 'package:myapp/app/models/area_model.dart';
 import 'package:myapp/app/models/category_model.dart';
-import 'package:myapp/app/models/user_ingredient_model.dart';
+import 'package:myapp/app/models/ingredient_model.dart';
 import 'package:myapp/app/models/meal_model.dart';
 
 class MealApiService {
