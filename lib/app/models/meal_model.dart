@@ -30,12 +30,12 @@ class MealModel {
     List<String> measurements = [];
 
     for (int i = 1; i <= 20; i++) {
-      String ingredient = json['strIngredient$i'];
-      String measurement = json['strMeasure$i'];
+      final ingredient = json['strIngredient$i'];
+      final measurement = json['strMeasure$i'];
 
-      if (ingredient.trim().isNotEmpty) {
-        ingredients.add(ingredient);
-        measurements.add(measurement);
+      if (ingredient != null && ingredient.toString().trim().isNotEmpty) {
+        ingredients.add(ingredient.toString());
+        measurements.add(measurement?.toString() ?? '');
       }
     }
 
