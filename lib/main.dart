@@ -4,6 +4,7 @@ import 'package:myapp/app/configs/firebase_options.dart';
 import 'package:myapp/app/screens/main_screen.dart';
 import 'package:myapp/app/screens/login_screen.dart';
 import 'package:myapp/app/screens/register_screen.dart';
+import 'package:myapp/app/screens/add_ingredient_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         'main': (context) => const MainScreen(),
         'login': (context) => const LoginScreen(),
         'register': (context) => const RegisterScreen(),
+        'add_ingredient': (context) => const AddIngredientScreen(),
       },
     );
   }
