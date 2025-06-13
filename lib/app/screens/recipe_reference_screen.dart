@@ -15,7 +15,8 @@ class _RecipeReferenceScreenState extends State<RecipeReferenceScreen> {
   final MealApiService _mealApiService = MealApiService();
   final FirestoreService _firestoreService = FirestoreService();
 
-  String selectedIngredient = 'chicken_breast';
+  String selectedIngredient = '';
+  bool didSetDefaultIngredient = false;
 
   List<MealModel> meals = [];
   bool isLoading = false;
@@ -65,12 +66,40 @@ class _RecipeReferenceScreenState extends State<RecipeReferenceScreen> {
     });
   }
 
+  void setSelectedIngredient(String value) {
+    setState(() {
+      selectedIngredient = value;
+    });
+    fetchMeals();
+  }
+
+  Widget _buildNoReferenceFoundView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.soup_kitchen, size: 80, color: Colors.grey),
+          const SizedBox(height: 16),
+          const Text(
+            'No recipe recommendations found',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Try selecting a different ingredient.',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Recipes with ${selectedIngredient.replaceAll('_', ' ').split(' ').map((word) => word[0].toUpperCase() + word.substring(1)).join(' ')}',
+          'Recipes ${selectedIngredient == '' ? '' : 'with ${selectedIngredient.replaceAll('_', ' ').split(' ').map((word) => word[0].toUpperCase() + word.substring(1)).join(' ')}'}',
         ),
       ),
       body: Column(
@@ -83,8 +112,16 @@ class _RecipeReferenceScreenState extends State<RecipeReferenceScreen> {
               }
 
               final ingredients = snapshot.data!;
-              if (!ingredients.contains(selectedIngredient)) {
+              if (!didSetDefaultIngredient &&
+                  ingredients.isNotEmpty &&
+                  !ingredients.contains(selectedIngredient)) {
                 selectedIngredient = ingredients.first;
+                didSetDefaultIngredient = true;
+
+                // Reset and refetch after first frame to avoid setState during build
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  setSelectedIngredient(ingredients.first);
+                });
               }
 
               return DropdownButton<String>(
@@ -105,10 +142,7 @@ class _RecipeReferenceScreenState extends State<RecipeReferenceScreen> {
                 }).toList(),
                 onChanged: (value) {
                   if (value != null) {
-                    setState(() {
-                      selectedIngredient = value;
-                    });
-                    fetchMeals(); // ⏬ fetch based on selection
+                    setSelectedIngredient(value);
                   }
                 },
               );
@@ -118,7 +152,7 @@ class _RecipeReferenceScreenState extends State<RecipeReferenceScreen> {
             child: isLoading
                 ? Center(child: CircularProgressIndicator())
                 : meals.isEmpty
-                ? Center(child: Text('No meals found.'))
+                ? _buildNoReferenceFoundView()
                 : ListView.builder(
                     itemCount: meals.length,
                     itemBuilder: (context, index) {
