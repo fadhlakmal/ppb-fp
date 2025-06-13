@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/app/screens/home_screen.dart';
 import 'package:myapp/app/screens/profile_screen.dart';
 import 'package:myapp/app/screens/add_ingredient_screen.dart';
+import 'package:myapp/app/screens/recipe_list_screen.dart';
 import 'package:myapp/app/screens/recipe_schedule_screen.dart';
 import 'package:myapp/app/widgets/bottom_navbar_widget.dart';
 
@@ -18,6 +19,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
     AddIngredientScreen(),
+    RecipeListScreen(),
     ScheduleScreen(),
     ProfileScreen(),
   ];
