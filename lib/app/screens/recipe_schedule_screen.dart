@@ -384,19 +384,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       if (pickedDate != null && context.mounted) {
                         Navigator.of(context).pop();
                         _showEditRecipeScheduleDialog(
-                    context,
-                    schedule,
-                    initialTitle: titleController.text,
-                    initialMessage: messageController.text,
-                    initialDate: DateTime(
-                      selectedDate.year,
-                      selectedDate.month,
-                      selectedDate.day,
-                      pickedTime.hour,
-                      pickedTime.minute,
-                    ),
-                    initialTime: pickedTime,
-                  );
+                          context,
+                          schedule,
+                          initialTitle: titleController.text,
+                          initialMessage: messageController.text,
+                          initialDate: DateTime(
+                            pickedDate.year,
+                            pickedDate.month,
+                            pickedDate.day,
+                            selectedTime.hour,
+                            selectedTime.minute,
+                          ),
+                          initialTime: selectedTime,
+                        );
                       }
                     },
                   ),
@@ -412,14 +412,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
                       if (pickedTime != null && context.mounted) {
                         Navigator.of(context).pop();
-                        _showEditRecipeScheduleDialog(context, schedule);
-                        selectedTime = pickedTime;
-                        selectedDate = DateTime(
-                          selectedDate.year,
-                          selectedDate.month,
-                          selectedDate.day,
-                          pickedTime.hour,
-                          pickedTime.minute,
+                        _showEditRecipeScheduleDialog(
+                          context,
+                          schedule,
+                          initialTitle: titleController.text,
+                          initialMessage: messageController.text,
+                          initialDate: DateTime(
+                            selectedDate.year,
+                            selectedDate.month,
+                            selectedDate.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          ),
+                          initialTime: pickedTime,
                         );
                       }
                     },
