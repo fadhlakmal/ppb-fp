@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/app/models/meal_model.dart';
+import 'package:myapp/app/models/recipe_model.dart';
+import 'package:myapp/app/services/firestore_service.dart';
 import 'package:myapp/app/services/meal_api_service.dart';
 
 class RecipeReferenceDetailScreen extends StatefulWidget {
@@ -15,6 +17,7 @@ class RecipeReferenceDetailScreen extends StatefulWidget {
 class _RecipeReferenceDetailScreenState
     extends State<RecipeReferenceDetailScreen> {
   final MealApiService _mealApiService = MealApiService();
+  final FirestoreService _firestoreService = FirestoreService();
 
   MealModel? meal;
   bool isLoading = true;
@@ -39,6 +42,21 @@ class _RecipeReferenceDetailScreenState
       });
     }
     setState(() => isLoading = false);
+  }
+
+  Future<void> _saveMealToRecipe() async {
+    final recipe = Recipe(
+      name: meal?.strMeal ?? 'Unknown Meal',
+      category: meal?.strCategory ?? 'N/A',
+      area: meal?.strArea ?? 'N/A',
+      instructions: meal?.strInstructions ?? 'No instructions available.',
+      imageUrl: meal?.strMealThumb ?? '',
+      userId: _firestoreService.getCurrentUserId() ?? '',
+      ingredients: meal?.ingredients ?? [],
+      measurements: meal?.measurements ?? [],
+    );
+    _firestoreService.addRecipe(recipe);
+    Navigator.popUntil(context, (route) => route.isFirst);
   }
 
   @override
@@ -66,7 +84,15 @@ class _RecipeReferenceDetailScreenState
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text('Meal Detail')),
+      appBar: AppBar(
+        title: Text('Recipe Recommendation'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.bookmark_add),
+            onPressed: _saveMealToRecipe,
+          ),
+        ],
+      ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : meal == null
@@ -93,8 +119,6 @@ class _RecipeReferenceDetailScreenState
                   Text("Ingredients:", style: TextStyle(fontSize: 18)),
                   SizedBox(height: 8),
                   ...ingredientWidgets,
-                  SizedBox(height: 16),
-                  if (youtubeLink.isNotEmpty) Text("YouTube: $youtubeLink"),
                 ],
               ),
             ),

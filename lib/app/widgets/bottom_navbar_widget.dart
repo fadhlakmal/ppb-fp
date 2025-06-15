@@ -22,8 +22,9 @@ class BottomNavbarWidget extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
         BottomNavigationBarItem(
           icon: Icon(Icons.set_meal_outlined),
-          label: "Bahan",
+          label: "Ingredient",
         ),
+        BottomNavigationBarItem(icon: Icon(Icons.book), label: "Recipe"),
         BottomNavigationBarItem(icon: Icon(Icons.schedule), label: "Schedule"),
         BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
       ],
