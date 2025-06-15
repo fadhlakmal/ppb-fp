@@ -179,12 +179,22 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     );
   }
 
-  Future<void> _showAddRecipeScheduleDialog(BuildContext context) async {
-    final TextEditingController titleController = TextEditingController();
-    final TextEditingController messageController = TextEditingController();
+  Future<void> _showAddRecipeScheduleDialog(
+    BuildContext context, {
+    String? initialTitle,
+    String? initialMessage,
+    DateTime? initialDate,
+    TimeOfDay? initialTime,
+  }) async {
+    final TextEditingController titleController = TextEditingController(
+      text: initialTitle ?? '',
+    );
+    final TextEditingController messageController = TextEditingController(
+      text: initialMessage ?? '',
+    );
 
-    DateTime selectedDate = DateTime.now();
-    TimeOfDay selectedTime = TimeOfDay.now();
+    DateTime selectedDate = initialDate ?? DateTime.now();
+    TimeOfDay selectedTime = initialTime ?? TimeOfDay.now();
 
     await showDialog(
       context: context,
@@ -219,13 +229,18 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
                       if (pickedDate != null && context.mounted) {
                         Navigator.of(context).pop();
-                        _showAddRecipeScheduleDialog(context);
-                        selectedDate = DateTime(
-                          pickedDate.year,
-                          pickedDate.month,
-                          pickedDate.day,
-                          selectedTime.hour,
-                          selectedTime.minute,
+                        _showAddRecipeScheduleDialog(
+                          context,
+                          initialTitle: titleController.text,
+                          initialMessage: messageController.text,
+                          initialDate: DateTime(
+                            pickedDate.year,
+                            pickedDate.month,
+                            pickedDate.day,
+                            selectedTime.hour,
+                            selectedTime.minute,
+                          ),
+                          initialTime: selectedTime,
                         );
                       }
                     },
@@ -242,14 +257,18 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
                       if (pickedTime != null && context.mounted) {
                         Navigator.of(context).pop();
-                        _showAddRecipeScheduleDialog(context);
-                        selectedTime = pickedTime;
-                        selectedDate = DateTime(
-                          selectedDate.year,
-                          selectedDate.month,
-                          selectedDate.day,
-                          pickedTime.hour,
-                          pickedTime.minute,
+                        _showAddRecipeScheduleDialog(
+                          context,
+                          initialTitle: titleController.text,
+                          initialMessage: messageController.text,
+                          initialDate: DateTime(
+                            selectedDate.year,
+                            selectedDate.month,
+                            selectedDate.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          ),
+                          initialTime: pickedTime,
                         );
                       }
                     },
@@ -310,20 +329,26 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   Future<void> _showEditRecipeScheduleDialog(
     BuildContext context,
-    RecipeScheduleModel schedule,
-  ) async {
+    RecipeScheduleModel schedule, {
+    String? initialTitle,
+    String? initialMessage,
+    DateTime? initialDate,
+    TimeOfDay? initialTime,
+  }) async {
     final TextEditingController titleController = TextEditingController(
-      text: schedule.recipeTitle,
+      text: initialTitle ?? schedule.recipeTitle,
     );
     final TextEditingController messageController = TextEditingController(
-      text: schedule.reminderMessage,
+      text: initialMessage ?? schedule.reminderMessage,
     );
 
-    DateTime selectedDate = schedule.scheduleDateTime;
-    TimeOfDay selectedTime = TimeOfDay(
-      hour: schedule.scheduleDateTime.hour,
-      minute: schedule.scheduleDateTime.minute,
-    );
+    DateTime selectedDate = initialDate ?? schedule.scheduleDateTime;
+    TimeOfDay selectedTime =
+        initialTime ??
+        TimeOfDay(
+          hour: schedule.scheduleDateTime.hour,
+          minute: schedule.scheduleDateTime.minute,
+        );
 
     await showDialog(
       context: context,
@@ -358,13 +383,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
                       if (pickedDate != null && context.mounted) {
                         Navigator.of(context).pop();
-                        _showEditRecipeScheduleDialog(context, schedule);
-                        selectedDate = DateTime(
-                          pickedDate.year,
-                          pickedDate.month,
-                          pickedDate.day,
-                          selectedTime.hour,
-                          selectedTime.minute,
+                        _showEditRecipeScheduleDialog(
+                          context,
+                          schedule,
+                          initialTitle: titleController.text,
+                          initialMessage: messageController.text,
+                          initialDate: DateTime(
+                            pickedDate.year,
+                            pickedDate.month,
+                            pickedDate.day,
+                            selectedTime.hour,
+                            selectedTime.minute,
+                          ),
+                          initialTime: selectedTime,
                         );
                       }
                     },
@@ -381,14 +412,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
                       if (pickedTime != null && context.mounted) {
                         Navigator.of(context).pop();
-                        _showEditRecipeScheduleDialog(context, schedule);
-                        selectedTime = pickedTime;
-                        selectedDate = DateTime(
-                          selectedDate.year,
-                          selectedDate.month,
-                          selectedDate.day,
-                          pickedTime.hour,
-                          pickedTime.minute,
+                        _showEditRecipeScheduleDialog(
+                          context,
+                          schedule,
+                          initialTitle: titleController.text,
+                          initialMessage: messageController.text,
+                          initialDate: DateTime(
+                            selectedDate.year,
+                            selectedDate.month,
+                            selectedDate.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          ),
+                          initialTime: pickedTime,
                         );
                       }
                     },
@@ -465,9 +501,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  _scheduleService.deleteScheduledRecipe(
-                    int.parse(schedule.id),
-                  );
+                  _scheduleService.deleteScheduledRecipe(schedule.id);
                   Navigator.pop(context);
                 },
                 style: TextButton.styleFrom(foregroundColor: Colors.red),

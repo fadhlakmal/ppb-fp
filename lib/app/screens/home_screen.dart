@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/app/services/meal_api_service.dart';
 import 'package:myapp/app/services/notification_service.dart';
@@ -88,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Center(child: Text(_text)),
       floatingActionButton: ElevatedButton(
-        onPressed: _testScheduledNotification,
+        onPressed: _getRandomMeal,
         child: Icon(Icons.add),
       ),
     );

@@ -69,10 +69,10 @@ class RecipeScheduleService {
     }
   }
 
-  Future<void> deleteScheduledRecipe(int recipeId) async {
+  Future<void> deleteScheduledRecipe(String recipeId) async {
     if (_uid == null) return;
 
-    await _scheduledRecipes.doc(recipeId.toString()).delete();
+    await _scheduledRecipes.doc(recipeId).delete();
 
     await NotificationService.cancelNotification(recipeId.hashCode);
     await NotificationService.cancelNotification(recipeId.hashCode + 10000);
@@ -125,7 +125,7 @@ class RecipeScheduleService {
     }
   }
 
-  Future<void> snoozeRecipe(int recipeId, Duration snoozeDuration) async {
+  Future<void> snoozeRecipe(String recipeId, Duration snoozeDuration) async {
     await NotificationService.createNotification(
       id: recipeId.hashCode + 20000,
       title: '👨‍🍳 Recipe Reminder (Snoozed)',
@@ -135,7 +135,7 @@ class RecipeScheduleService {
     );
   }
 
-  Future<void> markRecipeAsCooked(int recipeId, String recipeTitle) async {
+  Future<void> markRecipeAsCooked(String recipeId, String recipeTitle) async {
     await NotificationService.cancelNotification(recipeId.hashCode);
     await NotificationService.cancelNotification(recipeId.hashCode + 10000);
     await NotificationService.cancelNotification(recipeId.hashCode + 20000);
