@@ -115,11 +115,27 @@ Find recipes based on what you already have:
 Plan your meals throughout the week:
 
 - Assign recipes to specific days
-- Build a structured weekly meal calendar
+- Receive reminder for scheduled recipes
 - Stay on track with your cooking goals
 
 📸 _Screenshot Placeholder_  
-`![Meal Planner](screenshots/meal_planner.png)`
+
+![image](https://github.com/user-attachments/assets/19fac181-3a7a-403b-981c-46829e2bc529)
+
+> Schedule a Recipe
+
+![image](https://github.com/user-attachments/assets/2ca447c7-f721-4078-862c-7dc982a4bd21)
+
+![image](https://github.com/user-attachments/assets/ee2e9681-e62a-4eab-8a60-c7d6fc4f4acc)
+
+> Edit Schedule Settings
+
+![image](https://github.com/user-attachments/assets/afad7451-e976-4eb2-aa38-e1e8d734a0b9)
+
+> Delete Scheduled Recipe
+
+![image](https://github.com/user-attachments/assets/ce73b1c0-caea-4729-aaba-2c1fa9fdea4f)
+
 
 ---
 
