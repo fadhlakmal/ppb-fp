@@ -8,9 +8,9 @@
 
 | Nama                       | NRP        | Github                        |
 | -------------------------- | ---------- | ----------------------------- |
+| Kevin Nathanael Halim      | 5025211140 | https://github.com/zetsux     |
 | Fadhl Akmal Madany         | 5025221028 | https://github.com/fadhlakmal |
 | Muhammad Detri Abdul Fikar | 5025221236 | https://github.com/SingSopan  |
-| Kevin Nathanael Halim      | 5025211140 | https://github.com/zetsux     |
 
 ---
 
@@ -137,12 +137,18 @@ Plan your meals throughout the week:
 
 ## 💼 Member's Contribution
 
-### Fadhl Akmal Madany (5025221028)
-
-### Muhammad Detri Abdul Fikar (5025221236)
-
 ### Kevin Nathanael Halim (5025211140)
 
 - Implemented CRUD functionality for Recipes (Create, Read, Update, Delete) filtered by the authenticated user using Firebase Auth
 - Integrated with [The Meal DB API](https://www.themealdb.com) to fetch diverse recipe recommendations with detailed specifications to be added to recipe collections
 - Utilized ingredients stock stored in Firebase Firestore to find recipe recommendations based on user's ingredients in stock
+- Designed the app logo
+
+### Fadhl Akmal Madany (5025221028)
+
+- User and authentication (edit profile image, login, register, and logout).
+- CRUD for recipe scheduling, including local notification for set schedule.
+- Base implementation for [The Meal DB API](https://www.themealdb.com).
+- Splash screen and launcher icon.
+
+### Muhammad Detri Abdul Fikar (5025221236)
