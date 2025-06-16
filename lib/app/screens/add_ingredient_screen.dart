@@ -375,6 +375,19 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                       margin: const EdgeInsets.symmetric(vertical: 8.0),
                       elevation: 2.0,
                       child: ListTile(
+                        leading: Image.network(
+                          "https://www.themealdb.com/images/ingredients/${ingredient.name.toLowerCase().replaceAll(' ', '_')}.png",
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 60,
+                              height: 60,
+                              color: Colors.grey,
+                            );
+                          },
+                        ),
                         title: Text(
                           ingredient.name,
                           style: const TextStyle(fontWeight: FontWeight.bold),
