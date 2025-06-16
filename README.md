@@ -136,6 +136,10 @@ Plan your meals throughout the week:
 
 ![image](https://github.com/user-attachments/assets/ce73b1c0-caea-4729-aaba-2c1fa9fdea4f)
 
+> Receive Reminders
+
+![image](https://github.com/user-attachments/assets/37f8d7fe-dbb8-474c-94f6-edc9a6ba5ce2)
+
 
 ---
 
