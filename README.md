@@ -54,17 +54,37 @@ Track and manage your ingredients easily:
 
 ---
 
-### 🔍 Smart Recipe Recommendations
+### 🔍 Recipe Recommendations and Management
 
 Find recipes based on what you already have:
 
 - Personalized recipe suggestions based on your stock
 - Cook using what's already in your kitchen
-- View recipe instructions and required ingredients
+- View, save, and freely edit recipe instructions along with the required ingredients
 
-📸 _Screenshot Placeholder_  
-`![Recipe Suggestions](screenshots/recipe_suggestions.png)`
+#### 📚 Recipe Collection
 
+<img width="398" alt="Recipe Collections" src="https://github.com/user-attachments/assets/495195da-4575-4e71-a983-dc169918c6f1" />
+
+> View all your saved recipes in a clean, organized format
+
+#### 🧠 Recipe Recommendations by Ingredients in Stock
+
+<img width="397" alt="Recipe Recommendations by Ingredients in Stock" src="https://github.com/user-attachments/assets/cd6383c7-51c4-4342-b49a-a320aa8accda" />
+
+> Get recipe suggestions based on your pantry stocks
+
+#### 📖 Recipe Detail View
+
+<img width="396" alt="Recipe Recommendation Detail" src="https://github.com/user-attachments/assets/6e3a4161-72ab-4ffd-b1b0-80285f866d07" />
+
+> View detailed recipe instructions along with the ingredients needed and save it into your collection
+
+#### 🛠️ Recipe Management
+
+<img width="395" alt="Recipe Management" src="https://github.com/user-attachments/assets/37a27554-63f1-4864-8681-b6f5c4dfe9b5" />
+
+> Edit or delete your saved recipes to suit your cooking style
 ---
 
 ### 🗓️ Meal Scheduling
@@ -102,4 +122,4 @@ Plan your meals throughout the week:
 
 - Implemented CRUD functionality for Recipes (Create, Read, Update, Delete) filtered by the authenticated user using Firebase Auth
 - Integrated with [The Meal DB API](https://www.themealdb.com) to fetch diverse recipe recommendations with detailed specifications to be added to recipe collections
-- Utilized ingredients stock stored in Firebase Firestore to find recipe recommendations based on available ingredients
+- Utilized ingredients stock stored in Firebase Firestore to find recipe recommendations based on user's ingredients in stock
