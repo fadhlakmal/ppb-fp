@@ -61,12 +61,19 @@ Track and manage your ingredients easily:
 📸 _Screenshot Placeholder_  
 ![image](https://github.com/user-attachments/assets/54d48235-b655-4ef1-80a3-9ac83f477afb)
 
+> Add ingerdinet
+ 
 ![image](https://github.com/user-attachments/assets/c0276597-63c2-42c3-bf25-dd055fc63e69)
+
+> View your ingredient
 
 ![image](https://github.com/user-attachments/assets/f0bea96e-1b01-4079-9df5-dd8a62ef6b98)
 
+> Edit your ingredient
+
 ![image](https://github.com/user-attachments/assets/f484877c-14a0-4207-b43b-496d49740d67)
 
+> Delete your ingredinet
 
 ---
 
