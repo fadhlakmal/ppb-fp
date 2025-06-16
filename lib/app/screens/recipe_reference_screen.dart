@@ -24,10 +24,9 @@ class _RecipeReferenceScreenState extends State<RecipeReferenceScreen> {
   @override
   void initState() {
     super.initState();
-    fetchMeals();
   }
 
-  Future<void> fetchMeals() async {
+  Future<void> fetchMeals(String selectedIngredient) async {
     setState(() => isLoading = true);
     final response = await _mealApiService.getMealsByIngredient(
       selectedIngredient,
@@ -70,7 +69,7 @@ class _RecipeReferenceScreenState extends State<RecipeReferenceScreen> {
     setState(() {
       selectedIngredient = value;
     });
-    fetchMeals();
+    fetchMeals(selectedIngredient);
   }
 
   Widget _buildNoReferenceFoundView() {
@@ -112,16 +111,22 @@ class _RecipeReferenceScreenState extends State<RecipeReferenceScreen> {
               }
 
               final ingredients = snapshot.data!;
-              if (!didSetDefaultIngredient &&
-                  ingredients.isNotEmpty &&
-                  !ingredients.contains(selectedIngredient)) {
-                selectedIngredient = ingredients.first;
+              if (!didSetDefaultIngredient) {
                 didSetDefaultIngredient = true;
+                if (ingredients.isNotEmpty &&
+                    !ingredients.contains(selectedIngredient)) {
+                  selectedIngredient = ingredients.first;
 
-                // Reset and refetch after first frame to avoid setState during build
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  setSelectedIngredient(ingredients.first);
-                });
+                  // Reset and refetch after first frame to avoid setState during build
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    setSelectedIngredient(ingredients.first);
+                  });
+                } else {
+                  // Reset and refetch after first frame to avoid setState during build
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    setSelectedIngredient('');
+                  });
+                }
               }
 
               return DropdownButton<String>(
