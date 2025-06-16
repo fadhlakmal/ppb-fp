@@ -66,7 +66,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
         if (quantity <= 0) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Kuantitas harus lebih besar dari 0'),
+              content: Text('Quantity must be greater than 0'),
               backgroundColor: Colors.red,
             ),
           );
@@ -75,7 +75,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Format kuantitas tidak valid'),
+            content: Text('Invalid quantity format'),
             backgroundColor: Colors.red,
           ),
         );
@@ -86,9 +86,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
       if (userId == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text(
-              'Error: Pengguna tidak ditemukan. Silakan login ulang.',
-            ),
+            content: Text('Error: User not found. Please log in first.'),
             backgroundColor: Colors.red,
           ),
         );
@@ -115,18 +113,16 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
           Navigator.of(context).pop(); // Tutup loading
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Bahan berhasil ditambahkan'),
+              content: Text('Ingredient added successfully'),
               backgroundColor: Colors.green,
             ),
           );
         } else {
           if (_selectedIngredientForEdit == null) {
-            Navigator.of(context).pop(); // Tutup loading
+            Navigator.of(context).pop(); // Close loading
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text(
-                  'Error: Data bahan untuk diedit tidak ditemukan.',
-                ),
+                content: Text('Error: Ingredient data for editing not found.'),
                 backgroundColor: Colors.red,
               ),
             );
@@ -144,17 +140,17 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
           Navigator.of(context).pop(); // Tutup loading
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Bahan berhasil diupdate'),
+              content: Text('Ingredient updated successfully'),
               backgroundColor: Colors.green,
             ),
           );
         }
         _clearForm();
       } catch (e) {
-        Navigator.of(context).pop(); // Tutup loading
+        Navigator.of(context).pop(); // Close loading
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Terjadi kesalahan: $e'),
+            content: Text('Error occurred: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -167,17 +163,17 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Konfirmasi Hapus'),
+          title: const Text('Confirm Deletion'),
           content: const Text(
-            'Apakah Anda yakin ingin menghapus bahan ini? Operasi ini tidak dapat dibatalkan.',
+            'Are you sure you want to delete this ingredient? This action cannot be undone.',
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Batal'),
+              child: const Text('Cancel'),
               onPressed: () => Navigator.of(context).pop(false),
             ),
             TextButton(
-              child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
               onPressed: () => Navigator.of(context).pop(true),
             ),
           ],
@@ -197,7 +193,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
         Navigator.of(context).pop(); // Tutup loading
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Bahan berhasil dihapus'),
+            content: Text('Ingredient deleted successfully'),
             backgroundColor: Colors.orange,
           ),
         );
@@ -208,7 +204,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
         Navigator.of(context).pop(); // Tutup loading
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Gagal menghapus bahan: $e'),
+            content: Text('Failed to delete ingredient: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -221,15 +217,13 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _selectedIngredientId == null
-              ? 'Tambah Bahan Makanan'
-              : 'Edit Bahan Makanan',
+          _selectedIngredientId == null ? 'Add Ingredient' : 'Edit Ingredient',
         ),
         actions: [
           if (_selectedIngredientId != null)
             IconButton(
               icon: const Icon(Icons.clear),
-              tooltip: 'Batal Edit',
+              tooltip: 'Cancel Edit',
               onPressed: _clearForm,
             ),
         ],
@@ -248,14 +242,14 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                   TextFormField(
                     controller: _nameController,
                     decoration: const InputDecoration(
-                      labelText: 'Nama Bahan',
+                      labelText: 'Ingredient Name',
                       border: OutlineInputBorder(),
-                      hintText: 'Contoh: Telur Ayam',
+                      hintText: 'Example: Soy Sauce',
                       prefixIcon: Icon(Icons.restaurant_menu),
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Nama bahan tidak boleh kosong';
+                        return 'Ingredient name cannot be empty';
                       }
                       return null;
                     },
@@ -264,9 +258,9 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                   TextFormField(
                     controller: _quantityController,
                     decoration: const InputDecoration(
-                      labelText: 'Kuantitas',
+                      labelText: 'Quantity',
                       border: OutlineInputBorder(),
-                      hintText: 'Contoh: 10 atau 0.5',
+                      hintText: 'Example: 10 or 0.5',
                       prefixIcon: Icon(Icons.format_list_numbered),
                     ),
                     keyboardType: const TextInputType.numberWithOptions(
@@ -274,15 +268,15 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Kuantitas tidak boleh kosong';
+                        return 'Quantity cannot be empty';
                       }
                       try {
                         final quantity = double.parse(value.trim());
                         if (quantity <= 0) {
-                          return 'Kuantitas harus lebih besar dari 0';
+                          return 'Quantity must be greater than 0';
                         }
                       } catch (e) {
-                        return 'Format kuantitas tidak valid';
+                        return 'Invalid quantity format';
                       }
                       return null;
                     },
@@ -291,16 +285,16 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                   TextFormField(
                     controller: _unitController,
                     decoration: const InputDecoration(
-                      labelText: 'Satuan',
+                      labelText: 'Unit',
                       border: OutlineInputBorder(),
-                      hintText: 'Contoh: kg, gram, butir, buah, ml',
+                      hintText: 'Example: kg, gram, butir, buah, ml',
                       prefixIcon: Icon(
                         Icons.square_foot_outlined,
                       ), // Ganti ikon jika ada yang lebih cocok
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Satuan tidak boleh kosong';
+                        return 'Unit cannot be empty';
                       }
                       return null;
                     },
@@ -314,7 +308,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                       ),
                       label: Text(
                         _selectedIngredientId == null
-                            ? 'Simpan Bahan'
+                            ? 'Save Bahan'
                             : 'Update Bahan',
                       ),
                       onPressed: _addOrUpdateIngredient,
@@ -331,7 +325,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
             const Divider(),
             const SizedBox(height: 16),
             Text(
-              'Daftar Bahan Makanan Anda',
+              'Your Ingredients List',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
@@ -354,7 +348,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
                       child: Text(
-                        'Anda belum memiliki bahan makanan. Tambahkan sekarang!',
+                        'You do not have any ingredients yet. Add some now!',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
@@ -405,7 +399,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),
-                              tooltip: 'Hapus',
+                              tooltip: 'Delete',
                               onPressed: () {
                                 if (ingredient.id != null) {
                                   _deleteIngredient(ingredient.id!);
@@ -413,7 +407,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
-                                        'Error: ID bahan tidak ditemukan untuk dihapus.',
+                                        'Error: Ingredient ID not found for deletion.',
                                       ),
                                       backgroundColor: Colors.red,
                                     ),
