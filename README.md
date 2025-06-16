@@ -172,3 +172,6 @@ Plan your meals throughout the week:
 - Splash screen and launcher icon.
 
 ### Muhammad Detri Abdul Fikar (5025221236)
+
+- Implemented CRUD functionalitu for Ingredient (Create, Read, Update, Delete) filtered by the authenticated user using Firebase Auth
+- Intregeted with [The Meal DB API](https://www.themealdb.com) to brings up an image in ingredient screen
