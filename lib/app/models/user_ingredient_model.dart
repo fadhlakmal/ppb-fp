@@ -8,6 +8,7 @@ class Ingredient {
   final String userId;
   final Timestamp? createdAt;
   final Timestamp? updatedAt;
+  final String? imageUrl;
 
   Ingredient({
     this.id,
@@ -17,6 +18,7 @@ class Ingredient {
     required this.userId,
     this.createdAt,
     this.updatedAt,
+    this.imageUrl,
   });
 
 
@@ -30,6 +32,7 @@ class Ingredient {
       userId: data?['userId'] ?? '',
       createdAt: data?['createdAt'] as Timestamp?,
       updatedAt: data?['updatedAt'] as Timestamp?,
+        imageUrl: data?['imageUrl'] as String?,
     );
   }
 
@@ -42,6 +45,7 @@ class Ingredient {
       'userId': userId,
       if (createdAt != null) 'createdAt': createdAt,
       if (updatedAt != null) 'updatedAt': updatedAt,
+      if (imageUrl != null) 'imageUrl': imageUrl,
     };
   }
 }
