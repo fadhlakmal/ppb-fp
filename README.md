@@ -36,8 +36,17 @@ Secure access to your personalized Cookoo experience:
 - Firebase Authentication integration
 - Keeps your ingredients, preferences, and meal plans tied to your account
 
-📸 _Screenshot Placeholder_  
-`![Authentication](screenshots/authentication.png)`
+#### 🔑 Authentication
+
+<img width="398" alt="Authentication Screenshot" src="https://github.com/user-attachments/assets/e8261288-440f-4ed2-a849-c473b8b59d71" />
+
+> Login or create an account for a personalized experience
+
+#### 🧑‍💼 User Profile
+
+<img width="396" alt="User Profile Screenshot" src="https://github.com/user-attachments/assets/7645203f-49e1-42ea-b3b1-bd6b1b195244" />
+
+> View your profile and upload image linked to Firebase Storage
 
 ---
 
@@ -64,25 +73,25 @@ Find recipes based on what you already have:
 
 #### 📚 Recipe Collection
 
-<img width="398" alt="Recipe Collections" src="https://github.com/user-attachments/assets/495195da-4575-4e71-a983-dc169918c6f1" />
+<img width="398" alt="Recipe Collections Screenshot" src="https://github.com/user-attachments/assets/495195da-4575-4e71-a983-dc169918c6f1" />
 
 > View all your saved recipes in a clean, organized format
 
 #### 🧠 Recipe Recommendations by Ingredients in Stock
 
-<img width="397" alt="Recipe Recommendations by Ingredients in Stock" src="https://github.com/user-attachments/assets/cd6383c7-51c4-4342-b49a-a320aa8accda" />
+<img width="397" alt="Recipe Recommendations by Ingredients in Stock Screenshot" src="https://github.com/user-attachments/assets/cd6383c7-51c4-4342-b49a-a320aa8accda" />
 
 > Get recipe suggestions based on your pantry stocks
 
 #### 📖 Recipe Detail View
 
-<img width="396" alt="Recipe Recommendation Detail" src="https://github.com/user-attachments/assets/6e3a4161-72ab-4ffd-b1b0-80285f866d07" />
+<img width="396" alt="Recipe Recommendation Detail Screenshot" src="https://github.com/user-attachments/assets/6e3a4161-72ab-4ffd-b1b0-80285f866d07" />
 
 > View detailed recipe instructions along with the ingredients needed and save it into your collection
 
 #### 🛠️ Recipe Management
 
-<img width="395" alt="Recipe Management" src="https://github.com/user-attachments/assets/37a27554-63f1-4864-8681-b6f5c4dfe9b5" />
+<img width="395" alt="Recipe Management Screenshot" src="https://github.com/user-attachments/assets/37a27554-63f1-4864-8681-b6f5c4dfe9b5" />
 
 > Edit or delete your saved recipes to suit your cooking style
 ---
