@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:myapp/app/models/recipe_model.dart';
 import 'package:myapp/app/models/recipe_schedule_model.dart';
+import 'package:myapp/app/services/firestore_service.dart';
 import 'package:myapp/app/services/recipe_schedule_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -13,6 +15,7 @@ class ScheduleScreen extends StatefulWidget {
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
   final RecipeScheduleService _scheduleService = RecipeScheduleService();
+  final FirestoreService _firestoreService = FirestoreService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
@@ -195,134 +198,173 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
     DateTime selectedDate = initialDate ?? DateTime.now();
     TimeOfDay selectedTime = initialTime ?? TimeOfDay.now();
+    String? selectedRecipeId;
 
     await showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
-            title: const Text('Schedule a Recipe'),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: titleController,
-                    decoration: const InputDecoration(
-                      labelText: 'Recipe Title',
-                      hintText: 'Enter recipe name',
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ListTile(
-                    title: const Text('Date'),
-                    subtitle: Text(
-                      DateFormat('MMM dd, yyyy').format(selectedDate),
-                    ),
-                    trailing: const Icon(Icons.calendar_today),
-                    onTap: () async {
-                      final pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: selectedDate,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
-                      );
+          (context) => StatefulBuilder(
+            builder:
+                (context, setState) => AlertDialog(
+                  title: const Text('Schedule a Recipe'),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        StreamBuilder<List<Recipe>>(
+                          stream: _firestoreService.getRecipesStream(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
 
-                      if (pickedDate != null && context.mounted) {
-                        Navigator.of(context).pop();
-                        _showAddRecipeScheduleDialog(
-                          context,
-                          initialTitle: titleController.text,
-                          initialMessage: messageController.text,
-                          initialDate: DateTime(
-                            pickedDate.year,
-                            pickedDate.month,
-                            pickedDate.day,
-                            selectedTime.hour,
-                            selectedTime.minute,
+                            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Padding(
+                                padding: EdgeInsets.only(bottom: 16),
+                                child: Text(
+                                  'No recipes available. Create recipes first.',
+                                ),
+                              );
+                            }
+
+                            final recipes = snapshot.data!;
+
+                            return DropdownButtonFormField<String>(
+                              decoration: const InputDecoration(
+                                labelText: 'Select Recipe',
+                                border: OutlineInputBorder(),
+                              ),
+                              value: selectedRecipeId,
+                              hint: const Text('Choose a recipe'),
+                              items:
+                                  recipes.map((recipe) {
+                                    return DropdownMenuItem<String>(
+                                      value: recipe.id,
+                                      child: Text(recipe.name),
+                                    );
+                                  }).toList(),
+                              onChanged: (String? value) {
+                                setState(() {
+                                  selectedRecipeId = value;
+                                  if (value != null) {
+                                    final selectedRecipe = recipes.firstWhere(
+                                      (r) => r.id == value,
+                                    );
+                                    titleController.text = selectedRecipe.name;
+                                  }
+                                });
+                              },
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+
+                        TextField(
+                          controller: titleController,
+                          decoration: const InputDecoration(
+                            labelText: 'Recipe Title',
+                            hintText: 'Enter recipe name',
+                            border: OutlineInputBorder(),
                           ),
-                          initialTime: selectedTime,
-                        );
-                      }
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Time'),
-                    subtitle: Text(selectedTime.format(context)),
-                    trailing: const Icon(Icons.access_time),
-                    onTap: () async {
-                      final pickedTime = await showTimePicker(
-                        context: context,
-                        initialTime: selectedTime,
-                      );
+                        ),
+                        const SizedBox(height: 16),
+                        ListTile(
+                          title: const Text('Date'),
+                          subtitle: Text(
+                            DateFormat('MMM dd, yyyy').format(selectedDate),
+                          ),
+                          trailing: const Icon(Icons.calendar_today),
+                          onTap: () async {
+                            final pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: selectedDate,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.now().add(
+                                const Duration(days: 365),
+                              ),
+                            );
 
-                      if (pickedTime != null && context.mounted) {
-                        Navigator.of(context).pop();
-                        _showAddRecipeScheduleDialog(
-                          context,
-                          initialTitle: titleController.text,
-                          initialMessage: messageController.text,
-                          initialDate: DateTime(
+                            if (pickedDate != null && context.mounted) {
+                              setState(() {
+                                selectedDate = pickedDate;
+                              });
+                            }
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Time'),
+                          subtitle: Text(selectedTime.format(context)),
+                          trailing: const Icon(Icons.access_time),
+                          onTap: () async {
+                            final pickedTime = await showTimePicker(
+                              context: context,
+                              initialTime: selectedTime,
+                            );
+
+                            if (pickedTime != null) {
+                              setState(() {
+                                selectedTime = pickedTime;
+                              });
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: messageController,
+                          decoration: const InputDecoration(
+                            labelText: 'Reminder Message',
+                            hintText: 'Optional notification message',
+                            border: OutlineInputBorder(),
+                          ),
+                          maxLines: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (titleController.text.trim().isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please enter a recipe title'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final schedule = RecipeScheduleModel(
+                          recipeId:
+                              selectedRecipeId ??
+                              DateTime.now().millisecondsSinceEpoch.toString(),
+                          recipeTitle: titleController.text.trim(),
+                          scheduleDateTime: DateTime(
                             selectedDate.year,
                             selectedDate.month,
                             selectedDate.day,
-                            pickedTime.hour,
-                            pickedTime.minute,
+                            selectedTime.hour,
+                            selectedTime.minute,
                           ),
-                          initialTime: pickedTime,
+                          reminderMessage:
+                              messageController.text.trim().isEmpty
+                                  ? 'Time to cook ${titleController.text.trim()}!'
+                                  : messageController.text.trim(),
                         );
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: messageController,
-                    decoration: const InputDecoration(
-                      labelText: 'Reminder Message',
-                      hintText: 'Optional notification message',
-                    ),
-                    maxLines: 2,
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (titleController.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please enter a recipe title'),
-                      ),
-                    );
-                    return;
-                  }
 
-                  final schedule = RecipeScheduleModel(
-                    recipeId: DateTime.now().millisecondsSinceEpoch.toString(),
-                    recipeTitle: titleController.text.trim(),
-                    scheduleDateTime: DateTime(
-                      selectedDate.year,
-                      selectedDate.month,
-                      selectedDate.day,
-                      selectedTime.hour,
-                      selectedTime.minute,
+                        _scheduleService.scheduleRecipe(schedule);
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Schedule'),
                     ),
-                    reminderMessage:
-                        messageController.text.trim().isEmpty
-                            ? 'Time to cook ${titleController.text.trim()}!'
-                            : messageController.text.trim(),
-                  );
-
-                  _scheduleService.scheduleRecipe(schedule);
-                  Navigator.pop(context);
-                },
-                child: const Text('Schedule'),
-              ),
-            ],
+                  ],
+                ),
           ),
     );
   }
@@ -349,135 +391,199 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           hour: schedule.scheduleDateTime.hour,
           minute: schedule.scheduleDateTime.minute,
         );
+    String? selectedRecipeId = schedule.recipeId;
 
     await showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
-            title: const Text('Edit Recipe Schedule'),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: titleController,
-                    decoration: const InputDecoration(
-                      labelText: 'Recipe Title',
-                      hintText: 'Enter recipe name',
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ListTile(
-                    title: const Text('Date'),
-                    subtitle: Text(
-                      DateFormat('MMM dd, yyyy').format(selectedDate),
-                    ),
-                    trailing: const Icon(Icons.calendar_today),
-                    onTap: () async {
-                      final pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: selectedDate,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
-                      );
+          (context) => StatefulBuilder(
+            builder:
+                (context, setState) => AlertDialog(
+                  title: const Text('Edit Recipe Schedule'),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        StreamBuilder<List<Recipe>>(
+                          stream: _firestoreService.getRecipesStream(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
 
-                      if (pickedDate != null && context.mounted) {
-                        Navigator.of(context).pop();
-                        _showEditRecipeScheduleDialog(
-                          context,
-                          schedule,
-                          initialTitle: titleController.text,
-                          initialMessage: messageController.text,
-                          initialDate: DateTime(
-                            pickedDate.year,
-                            pickedDate.month,
-                            pickedDate.day,
-                            selectedTime.hour,
-                            selectedTime.minute,
+                            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return const Padding(
+                                padding: EdgeInsets.only(bottom: 16),
+                                child: Text(
+                                  'No recipes available. Create recipes first.',
+                                ),
+                              );
+                            }
+
+                            final recipes = snapshot.data!;
+
+                            if (selectedRecipeId != null &&
+                                !recipes.any((r) => r.id == selectedRecipeId)) {
+                              selectedRecipeId = null;
+                            }
+
+                            return DropdownButtonFormField<String>(
+                              decoration: const InputDecoration(
+                                labelText: 'Select Recipe',
+                                border: OutlineInputBorder(),
+                              ),
+                              value: selectedRecipeId,
+                              hint: const Text('Choose a recipe'),
+                              items:
+                                  recipes.map((recipe) {
+                                    return DropdownMenuItem<String>(
+                                      value: recipe.id,
+                                      child: Text(recipe.name),
+                                    );
+                                  }).toList(),
+                              onChanged: (String? value) {
+                                setState(() {
+                                  selectedRecipeId = value;
+                                  if (value != null) {
+                                    final selectedRecipe = recipes.firstWhere(
+                                      (r) => r.id == value,
+                                    );
+                                    titleController.text = selectedRecipe.name;
+                                  }
+                                });
+                              },
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+
+                        TextField(
+                          controller: titleController,
+                          decoration: const InputDecoration(
+                            labelText: 'Recipe Title',
+                            hintText: 'Enter recipe name',
+                            border: OutlineInputBorder(),
                           ),
-                          initialTime: selectedTime,
-                        );
-                      }
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Time'),
-                    subtitle: Text(selectedTime.format(context)),
-                    trailing: const Icon(Icons.access_time),
-                    onTap: () async {
-                      final pickedTime = await showTimePicker(
-                        context: context,
-                        initialTime: selectedTime,
-                      );
+                        ),
+                        const SizedBox(height: 16),
+                        ListTile(
+                          title: const Text('Date'),
+                          subtitle: Text(
+                            DateFormat('MMM dd, yyyy').format(selectedDate),
+                          ),
+                          trailing: const Icon(Icons.calendar_today),
+                          onTap: () async {
+                            final pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: selectedDate,
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime.now().add(
+                                const Duration(days: 365),
+                              ),
+                            );
 
-                      if (pickedTime != null && context.mounted) {
-                        Navigator.of(context).pop();
-                        _showEditRecipeScheduleDialog(
-                          context,
-                          schedule,
-                          initialTitle: titleController.text,
-                          initialMessage: messageController.text,
-                          initialDate: DateTime(
+                            if (pickedDate != null && context.mounted) {
+                              Navigator.of(context).pop();
+                              _showEditRecipeScheduleDialog(
+                                context,
+                                schedule,
+                                initialTitle: titleController.text,
+                                initialMessage: messageController.text,
+                                initialDate: DateTime(
+                                  pickedDate.year,
+                                  pickedDate.month,
+                                  pickedDate.day,
+                                  selectedTime.hour,
+                                  selectedTime.minute,
+                                ),
+                                initialTime: selectedTime,
+                              );
+                            }
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('Time'),
+                          subtitle: Text(selectedTime.format(context)),
+                          trailing: const Icon(Icons.access_time),
+                          onTap: () async {
+                            final pickedTime = await showTimePicker(
+                              context: context,
+                              initialTime: selectedTime,
+                            );
+
+                            if (pickedTime != null && context.mounted) {
+                              Navigator.of(context).pop();
+                              _showEditRecipeScheduleDialog(
+                                context,
+                                schedule,
+                                initialTitle: titleController.text,
+                                initialMessage: messageController.text,
+                                initialDate: DateTime(
+                                  selectedDate.year,
+                                  selectedDate.month,
+                                  selectedDate.day,
+                                  pickedTime.hour,
+                                  pickedTime.minute,
+                                ),
+                                initialTime: pickedTime,
+                              );
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: messageController,
+                          decoration: const InputDecoration(
+                            labelText: 'Reminder Message',
+                            hintText: 'Optional notification message',
+                          ),
+                          maxLines: 2,
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (titleController.text.trim().isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please enter a recipe title'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final updatedSchedule = schedule.copyWith(
+                          recipeId: selectedRecipeId ?? schedule.recipeId,
+                          recipeTitle: titleController.text.trim(),
+                          scheduleDateTime: DateTime(
                             selectedDate.year,
                             selectedDate.month,
                             selectedDate.day,
-                            pickedTime.hour,
-                            pickedTime.minute,
+                            selectedTime.hour,
+                            selectedTime.minute,
                           ),
-                          initialTime: pickedTime,
+                          reminderMessage:
+                              messageController.text.trim().isEmpty
+                                  ? 'Time to cook ${titleController.text.trim()}!'
+                                  : messageController.text.trim(),
                         );
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: messageController,
-                    decoration: const InputDecoration(
-                      labelText: 'Reminder Message',
-                      hintText: 'Optional notification message',
-                    ),
-                    maxLines: 2,
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (titleController.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please enter a recipe title'),
-                      ),
-                    );
-                    return;
-                  }
 
-                  final updatedSchedule = schedule.copyWith(
-                    recipeTitle: titleController.text.trim(),
-                    scheduleDateTime: DateTime(
-                      selectedDate.year,
-                      selectedDate.month,
-                      selectedDate.day,
-                      selectedTime.hour,
-                      selectedTime.minute,
+                        _scheduleService.updateScheduledRecipe(updatedSchedule);
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Update'),
                     ),
-                    reminderMessage:
-                        messageController.text.trim().isEmpty
-                            ? 'Time to cook ${titleController.text.trim()}!'
-                            : messageController.text.trim(),
-                  );
-
-                  _scheduleService.updateScheduledRecipe(updatedSchedule);
-                  Navigator.pop(context);
-                },
-                child: const Text('Update'),
-              ),
-            ],
+                  ],
+                ),
           ),
     );
   }
