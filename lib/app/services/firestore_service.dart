@@ -90,6 +90,26 @@ class FirestoreService {
     }
   }
 
+  Future<List<String>> getIngredientLabels() async {
+    try {
+      final snapshot =
+      await _db.collection('ingredients_label').orderBy('name').get();
+
+      if (snapshot.docs.isEmpty) {
+        print('Koleksi ingredients_label kosong atau tidak ditemukan.');
+        return [];
+      }
+      final labels = snapshot.docs.map((doc) {
+        return doc.data()['name'] as String;
+      }).toList();
+
+      return labels;
+    } catch (e) {
+      print('Error saat mengambil ingredient labels: $e');
+      return [];
+    }
+  }
+
   // RECIPES
 
   Future<void> addRecipe(Recipe recipe) async {
